@@ -218,17 +218,7 @@ Contributions are welcome! Please follow these steps:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
 
-- Built with modern MLOps best practices
-- Inspired by enterprise SaaS platforms
-- Designed for production deployment
-
-## 📧 Contact
-
-**Your Name** - [Your Email]
-
-Project Link: [https://github.com/YOUR_USERNAME/mlops](https://github.com/YOUR_USERNAME/mlops)
 
 ---
 
