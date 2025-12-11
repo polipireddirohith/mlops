@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChurnGuard AI - Enterprise Customer Retention Platform</title>
+    <meta name="description" content="AI-powered customer churn prediction with real-time analytics">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span class="logo-text">ChurnGuard<span class="ai-badge">AI</span></span>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Model Accuracy: <strong>94.2%</strong></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Uptime: <strong id="uptime">99.9%</strong></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- KPI Cards -->
+        <div class="kpi-section">
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-label">Total Customers</div>
+                    <div class="kpi-value" id="total-customers">7,842</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-up"></i> 12.5% from last month
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-label">At-Risk Customers</div>
+                    <div class="kpi-value" id="at-risk">1,247</div>
+                    <div class="kpi-change negative">
+                        <i class="fas fa-arrow-down"></i> 3.2% churn rate
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-label">Revenue Saved</div>
+                    <div class="kpi-value" id="revenue-saved">$284K</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-up"></i> This quarter
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-label">Predictions Today</div>
+                    <div class="kpi-value" id="predictions-today">342</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-up"></i> Real-time
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Left Column: Prediction Form -->
+            <div class="card prediction-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-calculator"></i> Customer Risk Assessment</h2>
+                    <span class="badge">Live</span>
+                </div>
+                <form id="churn-form">
+                    <div class="form-group">
+                        <label for="customer-id">
+                            <i class="fas fa-id-card"></i> Customer ID
+                        </label>
+                        <input type="text" id="customer-id" name="customer-id" placeholder="e.g., CUST-2024-001"
+                            value="CUST-2024-001">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tenure">
+                                <i class="fas fa-calendar-alt"></i> Tenure (months)
+                            </label>
+                            <input type="number" id="tenure" name="tenure" required min="0" placeholder="24" value="24">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="monthly-charges">
+                                <i class="fas fa-money-bill-wave"></i> Monthly Charges ($)
+                            </label>
+                            <input type="number" id="monthly-charges" name="monthly-charges" step="0.01" required
+                                min="0" placeholder="65.50" value="65.50">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contract">
+                            <i class="fas fa-file-contract"></i> Contract Type
+                        </label>
+                        <select id="contract" name="contract">
+                            <option value="Month-to-month">Month-to-month</option>
+                            <option value="One year">One year</option>
+                            <option value="Two year">Two year</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-predict">
+                        <i class="fas fa-magic"></i> Run Prediction
+                    </button>
+                </form>
+
+                <!-- Prediction Result -->
+                <div id="prediction-result" class="hidden">
+                    <div class="result-header">
+                        <i class="fas fa-chart-pie"></i> Prediction Result
+                    </div>
+                    <div class="prediction-badge-container">
+                        <div id="prediction-output" class="prediction-badge"></div>
+                    </div>
+
+                    <div id="probability-container" class="hidden">
+                        <div class="probability-label">
+                            <span>Churn Probability</span>
+                            <span id="probability-text" class="probability-value">0%</span>
+                        </div>
+                        <div class="probability-bar-container">
+                            <div id="probability-bar" class="probability-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Factors -->
+                    <div class="risk-factors">
+                        <h3><i class="fas fa-list-ul"></i> Key Risk Factors</h3>
+                        <div id="risk-factors-list"></div>
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div class="recommendations">
+                        <h3><i class="fas fa-lightbulb"></i> Recommended Actions</h3>
+                        <div id="recommendations-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Analytics -->
+            <div class="analytics-column">
+                <!-- Churn Distribution Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-pie"></i> Churn Distribution</h2>
+                    </div>
+                    <canvas id="predictionChart"></canvas>
+                </div>
+
+                <!-- Historical Trends -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-line"></i> 30-Day Churn Trend</h2>
+                    </div>
+                    <canvas id="trendChart"></canvas>
+                </div>
+
+                <!-- Model Performance -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-tachometer-alt"></i> Model Performance</h2>
+                    </div>
+                    <div class="performance-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">Precision</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="width: 92%"></div>
+                            </div>
+                            <div class="metric-value">92%</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Recall</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="width: 89%"></div>
+                            </div>
+                            <div class="metric-value">89%</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">F1-Score</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="width: 90.5%"></div>
+                            </div>
+                            <div class="metric-value">90.5%</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">AUC-ROC</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="width: 94.2%"></div>
+                            </div>
+                            <div class="metric-value">94.2%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <span>© 2024 ChurnGuard AI. Powered by MLOps Pipeline</span>
+            </div>
+            <div class="footer-right">
+                <span><i class="fas fa-server"></i> API Status: <span class="status-dot"></span> Operational</span>
+                <span><i class="fas fa-database"></i> Last Model Update: 2 hours ago</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
